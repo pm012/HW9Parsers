@@ -4,6 +4,8 @@ import json
 
 class QuotesSpider(scrapy.Spider):
     name = "quotes"
+    authors = []
+    quotes = []
 
     def start_requests(self):
         # Define the URL pattern to scrape
@@ -28,24 +30,29 @@ class QuotesSpider(scrapy.Spider):
 
                 # Store quote data in quotes.json
                 with open("quotes.json", "a") as quotes_file:
-                    quote_data = {
+                    self.quotes.append({
                         "quote": text,
                         "author": author,
                         "tags": tags
-                    }
-                    json.dump(quote_data, quotes_file)
-                    quotes_file.write("\n")
+                    })                   
 
                 # Extract author information and store in authors.json
-                author_url = quote.css(".author + a::attr(href)").get()
+                author_url = quote.css(".author + a::attr(href)").get() # TODO adjustment
                 if author_url:
                     author_page = response.urljoin(author_url)
                     yield scrapy.Request(author_page, callback=self.parse_author)
 
         # Check if the page has no quotes
         else:
-            with open("quotes.json", "a") as quotes_file:
-                quotes_file.write("No quotes found!\n")
+            # If no quotes found close_spider
+            self.crawler.engine.close_spider(self, "No quotes found!")
+                
+
+        # Dump authors and quotes data to JSON files
+        with open("authors.json", "w") as authors_file:
+            json.dump(self.authors, authors_file, indent=2)
+        with open("quotes.json", "w") as quotes_file:
+            json.dump(self.quotes, quotes_file, indent=2)
 
     def parse_author(self, response):
         # Extract author information
@@ -54,13 +61,14 @@ class QuotesSpider(scrapy.Spider):
         born_location = response.css(".author-born-location::text").get()
         description = response.css(".author-description::text").get()
 
-        # Store author data in authors.json
-        with open("authors.json", "a") as authors_file:
-            author_data = {
-                "fullname": fullname.strip(),
-                "born_date": born_date.strip(),
-                "born_location": born_location.strip(),
-                "description": description.strip()
-            }
-            json.dump(author_data, authors_file)
-            authors_file.write("\n")
+        # Store author data in authors list
+        self.authors.append({
+            "fullname": fullname.strip(),
+            "born_date": born_date.strip(),
+            "born_location": born_location.strip(),
+            "description": description.strip()
+        })
+
+        # Dump authors data to JSON file after each author is processed
+        with open("authors.json", "w") as authors_file:
+            json.dump(self.authors, authors_file, indent=2) 
