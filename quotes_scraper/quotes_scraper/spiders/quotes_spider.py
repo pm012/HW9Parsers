@@ -1,9 +1,11 @@
 import scrapy
 import json
 
-
 class QuotesSpider(scrapy.Spider):
     name = "quotes"
+    custom_settings = {
+        "TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+    }
     authors = []
     quotes = []
 
@@ -29,30 +31,17 @@ class QuotesSpider(scrapy.Spider):
                 tags = quote.css(".tags .tag::text").getall()
 
                 # Store quote data in quotes.json
-                with open("quotes.json", "a") as quotes_file:
-                    self.quotes.append({
-                        "quote": text,
-                        "author": author,
-                        "tags": tags
-                    })                   
+                self.quotes.append({
+                    "quote": text,
+                    "author": author,
+                    "tags": tags
+                })
 
                 # Extract author information and store in authors.json
-                author_url = quote.css(".author + a::attr(href)").get() # TODO adjustment
+                author_url = quote.css(".author + a::attr(href)").get()
                 if author_url:
                     author_page = response.urljoin(author_url)
                     yield scrapy.Request(author_page, callback=self.parse_author)
-
-        # Check if the page has no quotes
-        else:
-            # If no quotes found close_spider
-            self.crawler.engine.close_spider(self, "No quotes found!")
-                
-
-        # Dump authors and quotes data to JSON files
-        with open("authors.json", "w") as authors_file:
-            json.dump(self.authors, authors_file, indent=2)
-        with open("quotes.json", "w") as quotes_file:
-            json.dump(self.quotes, quotes_file, indent=2)
 
     def parse_author(self, response):
         # Extract author information
@@ -69,6 +58,9 @@ class QuotesSpider(scrapy.Spider):
             "description": description.strip()
         })
 
-        # Dump authors data to JSON file after each author is processed
+    def closed(self, reason):
+        # Dump authors and quotes data to JSON files after spider is closed
         with open("authors.json", "w") as authors_file:
-            json.dump(self.authors, authors_file, indent=2) 
+            json.dump(self.authors, authors_file, indent=2)
+        with open("quotes.json", "w") as quotes_file:
+            json.dump(self.quotes, quotes_file, indent=2)

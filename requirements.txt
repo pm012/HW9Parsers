@@ -1,3 +1,5 @@
 mongoengine==0.28.2
 pymongo==4.6.3
 Scrapy==2.11.1
+asyncio==3.4.3
+Twisted==24.3.0
