@@ -7,7 +7,7 @@ Part 1
 1. Navigate to qutoes_scraper, activate environment and import necessary libraries from requirements.txt
 2. Run crawling process "python main.py" and wait till script stops working.
 3. Navigate to project folder (HW9PARSERS) and provide correct cridentials for MongoDB connection string in config.ini
-4. You can remove data from the authors and quotes schema if needed by running clear_tables.py script
+4. You can remove data from the authors and quotes schema if needed by running clear_db.py script
 5. Run load_json.py to populate data from json files (located in json directory)
 6. run search.py to launch program to search by author or tag. Type 'exit' to exit the loop
 
@@ -61,7 +61,7 @@ quotes.json:
 ]
 ```
 
-## Task description.
+## Previous Task description.
 
 1. Create cloud DB [Atlas MongoDB](https://www.mongodb.com/atlas/database)
 2. With the [ODM Mongoengine](https://docs.mongoengine.org/) create models to store data from these files in a collections of authors and quotes.
@@ -75,3 +75,9 @@ quotes.json:
 - exit - end script execution;
 
 1. Output of search results only in format utf-8;
+
+HW9 task description:
+Using Scrapy framework perform scrapping of the site http://quotes.toscrape.com. You need to get 2 files: quotes.json and authors.json.
+The structure of the files should completely copy the structure of json files from the previous task.
+Execute the scripts to load the data from the json files.
+Previous HW should work properly with the new one.
