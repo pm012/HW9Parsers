@@ -4,19 +4,12 @@
 
 Part 1
 
-1. Provide correct cridentials for MongoDB connection string in config.ini
-2. Run load_json.py to populate data from json files (located in json directory)
-3. run search.py to launch program to search by author or tag. Type 'exit' to exit the loop
-
-Part 2
-
-1. Files related to the second part of the task is located in the "part2_rebbitMQ" folder (the same MongoDB database is used to store data)
-2. Navigate to part2_rabbitMQ folder and launch RabbitMQ server using command `docker-compose up -d` (NOTE: rabbitmq credentials should be updated both in docker-compose.yml and in config.ini)
-3. You can open rabbitMQ in browser 127.0.0.1:15672 and login using cridentials from the docker-compose.yml file
-4. Run producer.py script - this will generate fake contacts and send messages to RabbitMQ queues.
-5. Run consumer.py script (verify messages in the terminal messages or you can check the messages are handled via RabbitMQ MS in broser)
-
-# Mongo DB on Atlas with RabitMQ
+1. Navigate to qutoes_scraper, activate environment and import necessary libraries from requirements.txt
+2. Run crawling process "python main.py" and wait till script stops working.
+3. Navigate to project folder (HW9PARSERS) and provide correct cridentials for MongoDB connection string in config.ini
+4. You can remove data from the authors and quotes schema if needed by running clear_tables.py script
+5. Run load_json.py to populate data from json files (located in json directory)
+6. run search.py to launch program to search by author or tag. Type 'exit' to exit the loop
 
 ## First part:
 
